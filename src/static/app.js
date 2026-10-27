@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   // DOM elements
+  const themeToggle = document.getElementById("theme-toggle");
   const activitiesList = document.getElementById("activities-list");
   const messageDiv = document.getElementById("message");
   const registrationModal = document.getElementById("registration-modal");
@@ -12,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("activity-search");
   const searchButton = document.getElementById("search-button");
   const categoryFilters = document.querySelectorAll(".category-filter");
+  const difficultyFilters = document.querySelectorAll(".difficulty-filter");
   const dayFilters = document.querySelectorAll(".day-filter");
   const timeFilters = document.querySelectorAll(".time-filter");
 
@@ -25,6 +27,26 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeLoginModal = document.querySelector(".close-login-modal");
   const loginMessage = document.getElementById("login-message");
 
+  function applyTheme(theme) {
+    const isDark = theme === "dark";
+    document.documentElement.dataset.theme = isDark ? "dark" : "light";
+    themeToggle.textContent = isDark ? "☀️" : "🌙";
+    themeToggle.setAttribute(
+      "aria-label",
+      `Switch to ${isDark ? "light" : "dark"} mode`
+    );
+    themeToggle.setAttribute("aria-pressed", String(isDark));
+    themeToggle.title = `Switch to ${isDark ? "light" : "dark"} mode`;
+  }
+
+  applyTheme(localStorage.getItem("theme") === "dark" ? "dark" : "light");
+  themeToggle.addEventListener("click", () => {
+    const theme =
+      document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    applyTheme(theme);
+    localStorage.setItem("theme", theme);
+  });
+
   // Activity categories with corresponding colors
   const activityTypes = {
     sports: { label: "Sports", color: "#e8f5e9", textColor: "#2e7d32" },
@@ -37,6 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // State for activities and filters
   let allActivities = {};
   let currentFilter = "all";
+  let currentDifficulty = "";
   let searchQuery = "";
   let currentDay = "";
   let currentTimeRange = "";
@@ -427,6 +450,17 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+      // Activities without a difficulty are available at every level.
+      const difficulty = details.difficulty?.toLowerCase();
+      const matchesDifficulty =
+        !currentDifficulty ||
+        (currentDifficulty === "all"
+          ? !difficulty
+          : !difficulty || difficulty === currentDifficulty.toLowerCase());
+      if (!matchesDifficulty) {
+        return;
+      }
+
       // Apply weekend filter if selected
       if (currentTimeRange === "weekend" && details.schedule_details) {
         const activityDays = details.schedule_details.days;
@@ -472,12 +506,15 @@ document.addEventListener("DOMContentLoaded", () => {
     Object.entries(filteredActivities).forEach(([name, details]) => {
       renderActivityCard(name, details);
     });
+    window.activitySharing.focusSharedActivity();
   }
 
   // Function to render a single activity card
   function renderActivityCard(name, details) {
     const activityCard = document.createElement("div");
     activityCard.className = "activity-card";
+    activityCard.id = window.activitySharing.activityId(name);
+    activityCard.tabIndex = -1;
 
     // Calculate spots and capacity
     const totalSpots = details.max_participants;
@@ -589,6 +626,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
+    activityCard.appendChild(
+      window.activitySharing.createControls(name, details.description, formattedSchedule)
+    );
     activitiesList.appendChild(activityCard);
   }
 
@@ -613,6 +653,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Update current filter and display filtered activities
       currentFilter = button.dataset.category;
+      displayFilteredActivities();
+    });
+  });
+
+  difficultyFilters.forEach((button) => {
+    button.addEventListener("click", () => {
+      difficultyFilters.forEach((btn) => btn.classList.remove("active"));
+      button.classList.add("active");
+
+      currentDifficulty = button.dataset.difficulty;
       displayFilteredActivities();
     });
   });

@@ -1,5 +1,7 @@
 /* Color palette */
 :root {
+  color-scheme: light;
+
   /* Primary colors */
   --primary: #1a237e;
   --primary-light: #534bae;
@@ -30,6 +32,28 @@
   --error-light: #ffebee;
   --info: #0c5460;
   --info-light: #d1ecf1;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --primary: #9fa8da;
+  --primary-light: #c5cae9;
+  --primary-dark: #7986cb;
+  --primary-text: #1b1b1b;
+
+  --background: #121212;
+  --surface: #1e1e1e;
+  --text-primary: #f5f5f5;
+  --text-secondary: #bdbdbd;
+  --border: #424242;
+  --border-light: #333333;
+  --border-focus: #616161;
+
+  --success-light: #1b3a20;
+  --warning-light: #4a3b16;
+  --error-light: #4a1f22;
+  --info-light: #17383d;
 }
 
 * {
@@ -190,6 +214,56 @@ section h3 {
   justify-content: center;
 }
 
+.activity-sharing {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-light);
+}
+
+.activity-sharing a,
+.activity-sharing button {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background-color: var(--background);
+  color: var(--primary);
+  font-size: 0.8rem;
+  text-decoration: none;
+}
+
+.activity-sharing a:hover,
+.activity-sharing button:hover {
+  background-color: var(--border-light);
+}
+
+.activity-sharing a:focus-visible,
+.activity-sharing button:focus-visible,
+.share-link:focus-visible,
+.activity-card:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.activity-sharing .share-status {
+  width: 100%;
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.share-status:empty {
+  display: none;
+}
+
+.share-link {
+  width: 100%;
+  min-width: 0;
+  padding: 6px;
+}
+
 /* Activity Tag */
 .activity-tag {
   position: absolute;
@@ -203,6 +277,11 @@ section h3 {
   border-radius: 10px;
   text-transform: uppercase;
   letter-spacing: 0.3px;
+}
+
+:root[data-theme="dark"] .activity-tag {
+  background-color: var(--border) !important;
+  color: var(--text-primary) !important;
 }
 
 /* Capacity Indicator */
@@ -289,7 +368,7 @@ section h3 {
 
 button {
   background-color: var(--primary);
-  color: white;
+  color: var(--primary-text);
   border: none;
   padding: 6px 12px;
   font-size: 0.85rem;
@@ -487,6 +566,8 @@ footer {
   flex: 1;
   min-width: 0; /* Add this to prevent input from overflowing */
   padding: 6px 10px;
+  background-color: var(--surface);
+  color: var(--text-primary);
   border: 1px solid var(--border);
   border-right: none;
   border-radius: 20px 0 0 20px;
@@ -505,7 +586,7 @@ footer {
   height: 100%; /* Make button match input height */
   min-height: 32px; /* Ensure minimum clickable area */
   background: var(--primary);
-  color: white;
+  color: var(--primary-text);
   border: none;
   border-radius: 0 20px 20px 0;
   cursor: pointer;
@@ -538,6 +619,7 @@ footer {
 }
 
 .category-filters,
+.difficulty-filters,
 .day-filters,
 .time-filters {
   display: flex;
@@ -546,6 +628,7 @@ footer {
 }
 
 .category-filter,
+.difficulty-filter,
 .day-filter,
 .time-filter {
   background-color: var(--background);
@@ -559,14 +642,16 @@ footer {
 }
 
 .category-filter.active,
+.difficulty-filter.active,
 .day-filter.active,
 .time-filter.active {
   background-color: var(--primary);
-  color: white;
+  color: var(--primary-text);
   border-color: var(--primary-dark);
 }
 
 .category-filter:hover,
+.difficulty-filter:hover,
 .day-filter:hover,
 .time-filter:hover {
   background-color: var(--primary-light);
@@ -595,6 +680,10 @@ footer {
 
 /* Responsive adjustments for mobile */
 @media (max-width: 767px) {
+  header {
+    padding-top: 45px;
+  }
+
   .sidebar-filters {
     margin-bottom: 15px;
   }
@@ -617,6 +706,9 @@ footer {
   position: absolute;
   top: 10px;
   right: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 #user-status {
