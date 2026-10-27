@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   // DOM elements
+  const themeToggle = document.getElementById("theme-toggle");
   const activitiesList = document.getElementById("activities-list");
   const messageDiv = document.getElementById("message");
   const registrationModal = document.getElementById("registration-modal");
@@ -25,6 +26,26 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("login-form");
   const closeLoginModal = document.querySelector(".close-login-modal");
   const loginMessage = document.getElementById("login-message");
+
+  function applyTheme(theme) {
+    const isDark = theme === "dark";
+    document.documentElement.dataset.theme = isDark ? "dark" : "light";
+    themeToggle.textContent = isDark ? "☀️" : "🌙";
+    themeToggle.setAttribute(
+      "aria-label",
+      `Switch to ${isDark ? "light" : "dark"} mode`
+    );
+    themeToggle.setAttribute("aria-pressed", String(isDark));
+    themeToggle.title = `Switch to ${isDark ? "light" : "dark"} mode`;
+  }
+
+  applyTheme(localStorage.getItem("theme") === "dark" ? "dark" : "light");
+  themeToggle.addEventListener("click", () => {
+    const theme =
+      document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    applyTheme(theme);
+    localStorage.setItem("theme", theme);
+  });
 
   // Activity categories with corresponding colors
   const activityTypes = {
