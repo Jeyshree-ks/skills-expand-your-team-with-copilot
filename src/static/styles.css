@@ -279,6 +279,11 @@ section h3 {
   letter-spacing: 0.3px;
 }
 
+:root[data-theme="dark"] .activity-tag {
+  background-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+
 /* Capacity Indicator */
 .capacity-container {
   margin: 8px 0;
